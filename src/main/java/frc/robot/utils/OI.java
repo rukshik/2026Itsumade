@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.AlignToHub;
+import frc.robot.commands.AlignToHubTx;
 import frc.robot.commands.AlignToHubMT2;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.utils.Constants.DriveConstants;
@@ -31,7 +31,7 @@ public class OI {
         PSButton.onTrue(new InstantCommand(() -> Drivetrain.getInstance().resetGyro()));    
         
         Trigger squareButton = new JoystickButton(controller, PS4Controller.Button.kSquare.value);
-        squareButton.whileTrue(new AlignToHub());
+        squareButton.whileTrue(new AlignToHubTx());
         
         Trigger circleButton = new JoystickButton(controller, PS4Controller.Button.kCircle.value);
         circleButton.whileTrue(new AlignToHubMT2());

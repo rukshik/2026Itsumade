@@ -133,6 +133,10 @@ public class AlignToHubMT2 extends Command {
         }        
 
         Optional<Pose2d> estimatedPoseOptional = frontMiddleLimelight.getEstimatedPoseMT2();
+        // if(estimatedPoseOptional.isEmpty()) {
+        //     // init as hub front for now
+        //     estimatedPoseOptional = Optional.of(new Pose2d());
+        // }
         Pose2d estimatedPose = estimatedPoseOptional.get();
         estimatedFieldPoseMT2.setRobotPose(estimatedPose);
         SmartDashboard.putData(estimatedFieldPoseMT2);

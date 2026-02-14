@@ -16,7 +16,7 @@ import frc.robot.subsystems.LimelightFrontMiddle;
 import frc.robot.utils.Constants.HubAlignConstants;
 import frc.robot.utils.LimelightHelpers.LimelightTarget_Retro;
 
-public class AlignToHub extends Command {
+public class AlignToHubTx extends Command {
     private Drivetrain drivetrain;
     private PIDController lateralPIDController, depthPIDController,
             rotationalPIDController;
@@ -33,7 +33,7 @@ public class AlignToHub extends Command {
     private double rotationalError, lateralError, depthError;
     private double lateral, rotation;
 
-    public AlignToHub() {
+    public AlignToHubTx() {
         drivetrain = Drivetrain.getInstance();
         frontMiddleLimelight = LimelightFrontMiddle.getInstance();
 
