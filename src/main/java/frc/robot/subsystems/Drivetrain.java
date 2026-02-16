@@ -34,7 +34,7 @@ public class Drivetrain extends SubsystemBase {
 
     private SwerveDrivePoseEstimator odometry;
 
-    // private LimelightShooter limelightShooter;
+    private LimelightFrontMiddle limelightFrontMiddle;
 
     private boolean isForcingCalibration;
     private boolean useMegaTag = true;
@@ -99,7 +99,7 @@ public class Drivetrain extends SubsystemBase {
 
         pipelineNumber = 0;
 
-        // limelightShooter = LimelightShooter.getInstance();
+        limelightFrontMiddle = LimelightFrontMiddle.getInstance();
 
         isForcingCalibration = false;
         
@@ -148,17 +148,17 @@ public class Drivetrain extends SubsystemBase {
     public void updateOdometry(){
         odometry.update(getHeadingAsRotation2d(), positions);
 
-        //  if(DriverStation.isAutonomous()){
-        //     if (isForcingCalibration) {
-        //         limelightShooter.checkForAprilTagUpdates(odometry);
-        //     }
-        // }
-        // else{
-        //     if (useMegaTag || isForcingCalibration) {
-        //         limelightShooter.checkForAprilTagUpdates(odometry);
-        //         isForcingCalibration = false;
-        //     }
-        // }
+         if(DriverStation.isAutonomous()){
+            if (isForcingCalibration) {
+                limelightFrontMiddle.fuseEstimatedPose(odometry);
+            }
+        }
+        else{
+            //if (useMegaTag || isForcingCalibration) {
+                limelightFrontMiddle.fuseEstimatedPose(odometry);
+            //    isForcingCalibration = false;
+            //}
+        }
     }
 
     public void setStartingPose(Translation2d pose) {

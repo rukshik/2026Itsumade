@@ -8,6 +8,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -47,11 +48,11 @@ public class AlignToHubMT2 extends Command {
         // rotationalErrorThreshold = HubAlignConstants.kRotationalErrorThreshold;
         // rotationalLowerPThreshold = HubAlignConstants.kRotationLowerPThreshold;
 
-        SmartDashboard.putNumber("rotationalP", 0.1);
+        SmartDashboard.putNumber("rotationalP", 0.05);
         SmartDashboard.putNumber("rotationalI", 0);
         SmartDashboard.putNumber("rotationalD", 0);
         SmartDashboard.putNumber("rotationalFF", 0);
-        SmartDashboard.putNumber("rotationalLowerP", 0.05);
+        SmartDashboard.putNumber("rotationalLowerP", 0.02);
         SmartDashboard.putNumber("rotationalErrorThreshold", 1);
         SmartDashboard.putNumber("rotationalLowerPThreshold", 2);
         SmartDashboard.putNumber("rotationalError", 0);
@@ -118,6 +119,8 @@ public class AlignToHubMT2 extends Command {
         lateralLowerPThreshold = SmartDashboard.getNumber("lateralLowerPThreshold", 0);
         lateralErrorThreshold = SmartDashboard.getNumber("lateralErrorThreshold", 0);
         lateralPIDController = new PIDController(lateralP, lateralI, lateralD);
+
+        // drivetrain = Drivetrain.getInstance();
     }
 
     @Override
@@ -138,32 +141,40 @@ public class AlignToHubMT2 extends Command {
         }        
 
         // TODO: implement global odometry model when limelight not visible
-        Optional<Pose2d> estimatedPoseOptional = frontMiddleLimelight.getEstimatedPoseMT2();
-        Pose2d estimatedPose = estimatedPoseOptional.get();
+        Optional<Pose2d> optionalPose = frontMiddleLimelight.getEstimatedPoseMT2();
+        if (optionalPose.isEmpty()) 
+            optionalPose = Optional.of(drivetrain.getPose());
+        
+        Pose2d estimatedPose = optionalPose.get();
         // Pose2d estimatedPose = estimatedPoseOptional.isEmpty() ? drivetrain.getPose() : estimatedPoseOptional.get();
         estimatedFieldPoseMT2.setRobotPose(estimatedPose);
-        SmartDashboard.putData(estimatedFieldPoseMT2);
+        SmartDashboard.putData("estimatedFieldPoseMT2", estimatedFieldPoseMT2);
+        SmartDashboard.putNumber("epx", estimatedPose.getX());
+        SmartDashboard.putNumber("epy", estimatedPose.getY());
 
         lateralError = estimatedPose.getY() - desiredY;
         SmartDashboard.putNumber("lateralError", lateralError);
         
          
-        if (Math.abs(lateralError) < lateralLowerPThreshold)
-            lateralPIDController.setP(lateralLowerP);
-        else
-            lateralPIDController.setP(lateralP);
+        // if (Math.abs(lateralError) < lateralLowerPThreshold)
+        //     lateralPIDController.setP(lateralLowerP);
+        // else
+        //     lateralPIDController.setP(lateralP);
 
-        if (Math.abs(lateralError) > lateralErrorThreshold) {
-            lateral = lateralPIDController.calculate(-lateralError) - Math.signum(lateralError) * lateralFF;
-            SmartDashboard.putNumber("lateral", lateral);
-        } else {
-            lateral = 0;
-        }
+        // if (Math.abs(lateralError) > lateralErrorThreshold) {
+        //     lateral = lateralPIDController.calculate(-lateralError) - Math.signum(lateralError) * lateralFF;
+        //     SmartDashboard.putNumber("lateral", lateral);
+        // } else {
+        //     lateral = 0;
+        // }
+
+        
 
         drivetrain.drive(new Translation2d(0, lateral), rotation, true, null);
-        SmartDashboard.putData("estimatedPoseMT2",estimatedFieldPoseMT2);
-        SmartDashboard.putNumber("drivetrain estimated pose x", drivetrain.getPose().getX());
-        SmartDashboard.putNumber("drivetrain estimated pose y", drivetrain.getPose().getY());
+        // SmartDashboard.putData("estimatedPoseMT2",estimatedFieldPoseMT2);
+
+        // SmartDashboard.putNumber("drivetrain estimated pose x", drivetrain.getPose().getX());
+        // SmartDashboard.putNumber("drivetrain estimated pose y", drivetrain.getPose().getY());
     }
 
     @Override
