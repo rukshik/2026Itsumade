@@ -1,5 +1,8 @@
 package frc.robot.utils;
 
+import java.util.Optional;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -9,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AlignToHubTx;
 import frc.robot.commands.AlignToHubMT2;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.LimelightFrontMiddle;
 import frc.robot.utils.Constants.DriveConstants;
 
 public class OI {
@@ -36,7 +40,12 @@ public class OI {
         Trigger circleButton = new JoystickButton(controller, PS4Controller.Button.kCircle.value);
         circleButton.whileTrue(new AlignToHubMT2());
 
-        // Trigger xButton = new JoystickButton(controller, PS4Controller.Button.kCross.value);
+        Trigger xButton = new JoystickButton(controller, PS4Controller.Button.kCross.value);
+        xButton.onTrue(new InstantCommand(() -> {
+            Optional<Pose2d> pose = LimelightFrontMiddle.getInstance().getEstimatedPoseMT2();
+            if(pose.isPresent())
+                Drivetrain.getInstance().resetTranslation(pose.get().getTranslation());
+        }));
 
         // Trigger muteButton = new JoystickButton(controller, 15);
     }

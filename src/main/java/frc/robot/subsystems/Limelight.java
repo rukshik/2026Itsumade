@@ -152,19 +152,19 @@ public abstract class Limelight extends SubsystemBase {
         int numTagsSeen = getNumberOfTagsSeen();
         double distance = getDistanceEstimatedPose();
 
-        if (numTagsSeen == 1 && distance > 1.3)
-            return;
+        // if (numTagsSeen == 1 && distance > 1.3)
+        //     return;
 
-        // this may not even be necessary
-        if (numTagsSeen >= 2 && distance > 3.3)
-            return;
+        // // this may not even be necessary
+        // if (numTagsSeen >= 2 && distance > 3.3)
+        //     return;
 
-        Pose2d odoCurrent = odometry.getEstimatedPosition();
+        // Pose2d odoCurrent = odometry.getEstimatedPosition();
 
-        double distX = estimatedPose.getX() - odoCurrent.getX();
-        double distY = estimatedPose.getY() - odoCurrent.getY();
-        if (Math.sqrt((distX * distX) + (distY * distY)) > 3)
-            return;
+        // double distX = estimatedPose.getX() - odoCurrent.getX();
+        // double distY = estimatedPose.getY() - odoCurrent.getY();
+        // if (Math.sqrt((distX * distX) + (distY * distY)) > 3)
+        //     return;
 
         double deviation;
         if (numTagsSeen == 1)
@@ -173,7 +173,7 @@ public abstract class Limelight extends SubsystemBase {
             deviation = CameraConstants.k2TagStdDevs.get(distance);
 
         odometry.setVisionMeasurementStdDevs(VecBuilder.fill(
-                deviation, deviation, 30));
+                deviation, deviation, 999));
 
         odometry.addVisionMeasurement(estimatedPose, estimatedPoseEstimate.get().timestampSeconds);
     }

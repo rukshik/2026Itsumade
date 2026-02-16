@@ -75,10 +75,10 @@ public class AlignToHubMT2 extends Command {
         SmartDashboard.putNumber("lateralError", 0);
         SmartDashboard.putNumber("lateralLowerPThreshold", 0.05);
         SmartDashboard.putNumber("lateralLowerP", 0.2);
-        SmartDashboard.putNumber("drivetrain estimated pose x", drivetrain.getPose().getX());
-        SmartDashboard.putNumber("drivetrain estimated pose y", drivetrain.getPose().getY());
-        SmartDashboard.putData("estimatedPoseMT2", estimatedFieldPoseMT2);
-        SmartDashboard.putNumber("desiredX", 0);
+        SmartDashboard.putNumber("epx", -1);
+        SmartDashboard.putNumber("epy", -1);
+        SmartDashboard.putData("estimatedFieldPoseMT2", estimatedFieldPoseMT2);
+        SmartDashboard.putNumber("desiredY", 0);
 
         // depthP = HubAlignConstants.kDepthP;
         // depthI = HubAlignConstants.kDepthI;
@@ -99,7 +99,7 @@ public class AlignToHubMT2 extends Command {
 
         Pose2d tagPose = Limelight.getAprilTagPose((int)SmartDashboard.getNumber("Target April Tag ID", 20));
         
-        desiredAngle = 0;
+        desiredAngle = 180;
         rotationalP = SmartDashboard.getNumber("rotationalP", 0);
         rotationalI = SmartDashboard.getNumber("rotationalI", 0);
         rotationalD = SmartDashboard.getNumber("rotationalD", 0);
@@ -108,6 +108,7 @@ public class AlignToHubMT2 extends Command {
         rotationalLowerPThreshold = SmartDashboard.getNumber("rotationalLowerPThreshold", 0);
         rotationalErrorThreshold = SmartDashboard.getNumber("rotationalErrorThreshold", 0);
         rotationalPIDController = new PIDController(rotationalP, rotationalI, rotationalD);
+        rotationalPIDController.enableContinuousInput(-180,180);
         
         desiredY = tagPose.getY();
         SmartDashboard.putNumber("desiredY", desiredY);
@@ -119,6 +120,7 @@ public class AlignToHubMT2 extends Command {
         lateralLowerPThreshold = SmartDashboard.getNumber("lateralLowerPThreshold", 0);
         lateralErrorThreshold = SmartDashboard.getNumber("lateralErrorThreshold", 0);
         lateralPIDController = new PIDController(lateralP, lateralI, lateralD);
+    
 
         // drivetrain = Drivetrain.getInstance();
     }
@@ -142,11 +144,11 @@ public class AlignToHubMT2 extends Command {
 
         // TODO: implement global odometry model when limelight not visible
         Optional<Pose2d> optionalPose = frontMiddleLimelight.getEstimatedPoseMT2();
-        if (optionalPose.isEmpty()) 
+        if (optionalPose.get().getX() == 0 && optionalPose.get().getY() == 0) 
             optionalPose = Optional.of(drivetrain.getPose());
-        
+
         Pose2d estimatedPose = optionalPose.get();
-        // Pose2d estimatedPose = estimatedPoseOptional.isEmpty() ? drivetrain.getPose() : estimatedPoseOptional.get();
+
         estimatedFieldPoseMT2.setRobotPose(estimatedPose);
         SmartDashboard.putData("estimatedFieldPoseMT2", estimatedFieldPoseMT2);
         SmartDashboard.putNumber("epx", estimatedPose.getX());
@@ -155,26 +157,19 @@ public class AlignToHubMT2 extends Command {
         lateralError = estimatedPose.getY() - desiredY;
         SmartDashboard.putNumber("lateralError", lateralError);
         
-         
-        // if (Math.abs(lateralError) < lateralLowerPThreshold)
-        //     lateralPIDController.setP(lateralLowerP);
-        // else
-        //     lateralPIDController.setP(lateralP);
+        if (Math.abs(lateralError) < lateralLowerPThreshold)
+            lateralPIDController.setP(lateralLowerP);
+        else
+            lateralPIDController.setP(lateralP);
 
-        // if (Math.abs(lateralError) > lateralErrorThreshold) {
-        //     lateral = lateralPIDController.calculate(-lateralError) - Math.signum(lateralError) * lateralFF;
-        //     SmartDashboard.putNumber("lateral", lateral);
-        // } else {
-        //     lateral = 0;
-        // }
-
-        
+        if (Math.abs(lateralError) > lateralErrorThreshold) {
+            lateral = lateralPIDController.calculate(lateralError) - Math.signum(lateralError) * lateralFF;
+            SmartDashboard.putNumber("lateral", lateral);
+        } else {
+            lateral = 0;
+        }
 
         drivetrain.drive(new Translation2d(0, lateral), rotation, true, null);
-        // SmartDashboard.putData("estimatedPoseMT2",estimatedFieldPoseMT2);
-
-        // SmartDashboard.putNumber("drivetrain estimated pose x", drivetrain.getPose().getX());
-        // SmartDashboard.putNumber("drivetrain estimated pose y", drivetrain.getPose().getY());
     }
 
     @Override
@@ -185,5 +180,6 @@ public class AlignToHubMT2 extends Command {
     public boolean isFinished() {
         return false;
     }
+
 
 }
