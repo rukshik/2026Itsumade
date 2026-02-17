@@ -50,7 +50,10 @@ public abstract class Limelight extends SubsystemBase {
         distEstimatedPoseFilter = LinearFilter.singlePoleIIR(0.24, 0.02);
 
         fieldMT2 = new Field2d();
-        SmartDashboard.putData(limelightName + " estimated pose (MT2)", fieldMT2);
+        SmartDashboard.putData("estimated pose (MT2) " + limelightName, fieldMT2);
+        SmartDashboard.putNumber("estimated pose (MT2) x " + limelightName, fieldMT2.getRobotPose().getX());
+        SmartDashboard.putNumber("estimated pose (MT2) y " + limelightName, fieldMT2.getRobotPose().getY());
+        SmartDashboard.putNumber("estimated pose (MT2) angle " + limelightName, fieldMT2.getRobotPose().getRotation().getDegrees());
 
         initialFlashTime = 0.0;
 

@@ -96,13 +96,11 @@ public class Drivetrain extends SubsystemBase {
         fusedOdometry = new Field2d();
         SmartDashboard.putData("Fused odometry", fusedOdometry);
 
-
         pipelineNumber = 0;
 
         limelightFrontMiddle = LimelightFrontMiddle.getInstance();
 
         isForcingCalibration = false;
-        
     }
     
     public void resetGyro() {

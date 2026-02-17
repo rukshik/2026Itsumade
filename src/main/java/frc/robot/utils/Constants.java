@@ -10,29 +10,31 @@ import edu.wpi.first.math.util.Units;
 
 public class Constants {
     public static class HubAlignConstants {
-        // TODO: TUNE MORE
-        public static final double kRotationalP = 0.1;
+        public static final double kRotationalP = 0.05;
         public static final double kRotationalI = 0;
         public static final double kRotationalD = 0;
-        public static final double kRotationalLowerP = 0.04;
-        public static final double kRotationalErrorThreshold = 1;
-        public static final double kRotationLowerPThreshold = 1.3;
         public static final double kRotationalFF = 0;
+        public static final double kRotationalLowerP = 0.02;
+        public static final double kRotationalErrorThreshold = 1;
+        public static final double kRotationLowerPThreshold = 2;
 
-        // TODO: TUNE MORE
-        public static final double kLateralP = 0.05;
+        public static final double kLateralP = 1.344;
         public static final double kLateralI = 0;
         public static final double kLateralD = 0;
         public static final double kLateralFF = 0;
-        public static final double kLateralErrorThreshold = 1;
-        public static final double kLateralLowerP = 0.01;
-        public static final double kLateralLowerPThreshold = 2;
+        public static final double kLateralLowerP = 0.896;
+        public static final double kLateralErrorThreshold = 0.01;
+        public static final double kLateralLowerPThreshold = 0.05;
+        public static final double kLateralMaxSpeed = 2;
 
-        public static final double kDepthP = 0;
+        public static final double kDepthP = 0.85;
         public static final double kDepthI = 0;
         public static final double kDepthD = 0;
         public static final double kDepthFF = 0;
-        public static final double kDepthErrorThreshold = 0;
+        public static final double kDepthLowerP = 0.4;
+        public static final double kDepthErrorThreshold = 0.01;
+        public static final double kDepthLowerPThreshold = 0.05;
+        public static final double kDepthMaxSpeed = 2;
     }
     public static final class AlignmentConstants {
         public static final Map<Integer, Double> kReefDesiredAngle = new HashMap<>() {
