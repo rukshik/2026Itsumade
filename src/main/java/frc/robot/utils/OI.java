@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AlignToHub;
+import frc.robot.commands.AlignToTower;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.LimelightFrontMiddle;
 import frc.robot.utils.Constants.DriveConstants;
@@ -33,8 +34,11 @@ public class OI {
         Trigger PSButton = new JoystickButton(controller, PS4Controller.Button.kPS.value);
         PSButton.onTrue(new InstantCommand(() -> Drivetrain.getInstance().resetGyro()));    
         
-        Trigger circleButton = new JoystickButton(controller, PS4Controller.Button.kCircle.value);
-        circleButton.whileTrue(new AlignToHub());
+        // Trigger circleButton = new JoystickButton(controller, PS4Controller.Button.kCircle.value);
+        // circleButton.whileTrue(new AlignToHub());
+
+        Trigger squareButton = new JoystickButton(controller, PS4Controller.Button.kSquare.value);
+        squareButton.whileTrue(new AlignToTower());
 
         Trigger xButton = new JoystickButton(controller, PS4Controller.Button.kCross.value);
         xButton.onTrue(new InstantCommand(() -> {
